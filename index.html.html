@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CalculaSid Pro</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CalculaSid">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f39c12">
+    
+    <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_6uA6BqLhS9KqO7Iu9iA7nL5q0r_CgH2Oew&s">
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_6uA6BqLhS9KqO7Iu9iA7nL5q0r_CgH2Oew&s">
+
+    <style>
+        :root { --primary: #f39c12; --secondary: #2c3e50; --bg: #e8ecef; --success: #27ae60; --whatsapp: #25d366; }
+        
+        /* Ajuste para não selecionar texto ao clicar rápido (toque de app) */
+        * { -webkit-tap-highlight-color: transparent; user-select: none; }
+        input { user-select: auto; }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        .card { background: white; width: 95%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: linear-gradient(90deg, var(--primary), #f1c40f); }
+        
+        .header { text-align: center; margin-bottom: 15px; }
+        .header img { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--primary); padding: 3px; background: white; margin-bottom: 5px; }
+        h2 { margin: 0; color: var(--secondary); font-size: 1.4rem; font-weight: 800; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f1f3f5; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: 700; color: #95a5a6; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        
+        .tab-content { display: none; }
+        .tab-content.show { display: block; }
+        
+        .input-area { display: flex; flex-direction: column; gap: 8px; }
+        label { display: block; font-size: 10px; font-weight: 700; color: #95a5a6; text-transform: uppercase; margin-bottom: 2px; }
+        
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper span { position: absolute; left: 12px; color: #bdc3c7; font-weight: bold; }
+        
+        input { width: 100%; padding: 12px 12px 12px 45px; border: 2px solid #f1f3f5; border-radius: 12px; font-size: 16px; font-weight: 600; color: var(--secondary); background: #f8f9fa; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); background: white; outline: none; }
+        
+        .instruction { text-align: center; font-size: 11px; color: #95a5a6; margin-top: 15px; font-style: italic; }
+
+        .calculated { animation: highlight 1.5s ease; border-color: var(--success) !important; color: var(--success); font-weight: 800; }
+        @keyframes highlight { 0% { background: #dff9fb; } 100% { background: #f8f9fa; } }
+
+        .button-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .full-width { grid-column: span 2; }
+        
+        button.action-btn { padding: 16px; border: none; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        
+        #btnCalc { background: var(--primary); color: white; }
+        #btnClear { background: #ecf0f1; color: #7f8c8d; }
+        #btnWhats { background: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header" onclick="location.reload()">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_6uA6BqLhS9KqO7Iu9iA7nL5q0r_CgH2Oew&s" alt="Sid">
+        <h2>CalculaSid <small style="font-size: 0.8rem; font-weight: 300;">PRO</small></h2>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="mudarAba(event, 'aba1')">Básico</button>
+        <button class="tab-btn" onclick="mudarAba(event, 'aba2')">Sell Out</button>
+    </div>
+    
+    <div id="aba1" class="tab-content show">
+        <div class="input-area">
+            <label>Custo de Compra</label>
+            <div class="input-wrapper"><span>R$</span><input type="number" id="c1" inputmode="decimal"></div>
+            <label>Preço de Venda</label>
+            <div class="input-wrapper"><span>R$</span><input type="number" id="v1" inputmode="decimal"></div>
+            <label>Markup (%)</label>
+            <div class="input-wrapper"><span>%</span><input type="number" id="mk1" inputmode="decimal"></div>
+            <label>Margem (%)</label>
+            <div class="input-wrapper"><span>%</span><input type="number" id="mg1" inputmode="decimal"></div>
+        </div>
+        <div class="instruction">Preencher ao menos 2 campos</div>
+    </div>
+
+    <div id="aba2" class="tab-content">
+        <div class="input-area">
+            <label>Custo Bruto (NF)</label>
+            <div class="input-wrapper"><span>R$</span><input type="number" id="c2" inputmode="decimal"></div>
+            <label>Sell Out (Verba)</label>
+            <div class="input-wrapper"><span>R$</span><input type="number" id="s2" inputmode="decimal"></div>
+            <label>Venda Final</label>
+            <div class="input-wrapper"><span>R$</span><input type="number" id="v2" inputmode="decimal"></div>
+            <label>Markup Líquido (%)</label>
+            <div class="input-wrapper"><span>%</span><input type="number" id="mk2" inputmode="decimal"></div>
+            <label>Margem Líquida (%)</label>
+            <div class="input-wrapper"><span>%</span><input type="number" id="mg2" inputmode="decimal"></div>
+        </div>
+        <div class="instruction">Preencher ao menos 3 campos</div>
+    </div>
+
+    <div class="button-group">
+        <button id="btnClear" class="action-btn" onclick="limparTudo()">Limpar</button>
+        <button id="btnCalc" class="action-btn" onclick="calcular()">Calcular</button>
+        <button id="btnWhats" class="action-btn full-width" onclick="enviarWhatsApp()">
+            Enviar Resumo WhatsApp
+        </button>
+    </div>
+</div>
+
+<script>
+    function mudarAba(event, abaId) {
+        let conteudos = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < conteudos.length; i++) conteudos[i].classList.remove("show");
+        let botoes = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < botoes.length; i++) botoes[i].classList.remove("active");
+        document.getElementById(abaId).classList.add("show");
+        event.currentTarget.classList.add("active");
+    }
+
+    function destacar(id, valor) {
+        let el = document.getElementById(id);
+        el.value = valor.toFixed(2);
+        el.classList.add("calculated");
+    }
+
+    function calcular() {
+        if (document.getElementById('aba1').classList.contains('show')) {
+            let c = parseFloat(document.getElementById('c1').value);
+            let v = parseFloat(document.getElementById('v1').value);
+            let mk = parseFloat(document.getElementById('mk1').value);
+            let mg = parseFloat(document.getElementById('mg1').value);
+            document.querySelectorAll('#aba1 input').forEach(i => i.classList.remove('calculated'));
+
+            if (!isNaN(c) && !isNaN(v)) {
+                destacar('mk1', ((v / c) - 1) * 100);
+                destacar('mg1', ((v - c) / v) * 100);
+            } else if (!isNaN(c) && !isNaN(mk)) {
+                let nv = c * (1 + (mk / 100));
+                destacar('v1', nv);
+                destacar('mg1', ((nv - c) / nv) * 100);
+            } else if (!isNaN(c) && !isNaN(mg)) {
+                let nv = c / (1 - (mg / 100));
+                destacar('v1', nv);
+                destacar('mk1', ((nv / c) - 1) * 100);
+            } else if (!isNaN(v) && !isNaN(mk)) {
+                let nc = v / (1 + (mk / 100));
+                destacar('c1', nc);
+                destacar('mg1', ((v - nc) / v) * 100);
+            } else if (!isNaN(v) && !isNaN(mg)) {
+                let nc = v * (1 - (mg / 100));
+                destacar('c1', nc);
+                destacar('mk1', ((v / nc) - 1) * 100);
+            }
+        } else {
+            let bruto = parseFloat(document.getElementById('c2').value);
+            let sellout = parseFloat(document.getElementById('s2').value);
+            let venda = parseFloat(document.getElementById('v2').value);
+            let mk = parseFloat(document.getElementById('mk2').value);
+            let mg = parseFloat(document.getElementById('mg2').value);
+            
+            document.querySelectorAll('#aba2 input').forEach(i => i.classList.remove('calculated'));
+
+            if (!isNaN(bruto) && !isNaN(venda) && isNaN(sellout)) {
+                if (!isNaN(mg)) {
+                    let clAlvo = venda * (1 - (mg / 100));
+                    destacar('s2', bruto - clAlvo);
+                    destacar('mk2', ((venda / clAlvo) - 1) * 100);
+                } else if (!isNaN(mk)) {
+                    let clAlvo = venda / (1 + (mk / 100));
+                    destacar('s2', bruto - clAlvo);
+                    destacar('mg2', ((venda - clAlvo) / venda) * 100);
+                }
+            }
+            else if (isNaN(bruto) && !isNaN(sellout) && !isNaN(venda)) {
+                if (!isNaN(mg)) {
+                    let cl = venda * (1 - (mg / 100));
+                    destacar('c2', cl + sellout);
+                    destacar('mk2', ((venda / cl) - 1) * 100);
+                } else if (!isNaN(mk)) {
+                    let cl = venda / (1 + (mk / 100));
+                    destacar('c2', cl + sellout);
+                    destacar('mg2', ((venda - cl) / venda) * 100);
+                }
+            }
+            else if (!isNaN(bruto) && !isNaN(sellout) && isNaN(venda)) {
+                let cl = bruto - sellout;
+                if (!isNaN(mg)) {
+                    let nv = cl / (1 - (mg / 100));
+                    destacar('v2', nv);
+                    destacar('mk2', ((nv / cl) - 1) * 100);
+                } else if (!isNaN(mk)) {
+                    let nv = cl * (1 + (mk / 100));
+                    destacar('v2', nv);
+                    destacar('mg2', ((nv - cl) / nv) * 100);
+                }
+            }
+            else if (!isNaN(bruto) && !isNaN(venda)) {
+                let s = !isNaN(sellout) ? sellout : 0;
+                let cl = bruto - s;
+                destacar('mk2', ((venda / cl) - 1) * 100);
+                destacar('mg2', ((venda - cl) / venda) * 100);
+            }
+        }
+    }
+
+    function limparTudo() {
+        let inputs = document.getElementsByTagName("input");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].value = "";
+            inputs[i].classList.remove("calculated");
+        }
+    }
+
+    function enviarWhatsApp() {
+        let mensagem = "*RESUMO CALCULASID PRO*%0A------------------------------%0A";
+        
+        if (document.getElementById('aba1').classList.contains('show')) {
+            mensagem += "📊 *CÁLCULO BÁSICO*%0A%0A";
+            mensagem += "💰 Custo: R$ " + (document.getElementById('c1').value || "0.00") + "%0A";
+            mensagem += "🏷️ Venda: R$ " + (document.getElementById('v1').value || "0.00") + "%0A";
+            mensagem += "📈 Markup: " + (document.getElementById('mk1').value || "0.00") + "%%0A";
+            mensagem += "📉 Margem: " + (document.getElementById('mg1').value || "0.00") + "%%0A";
+        } else {
+            let bruto = parseFloat(document.getElementById('c2').value) || 0;
+            let s = parseFloat(document.getElementById('s2').value) || 0;
+            mensagem += "💹 *CÁLCULO SELL OUT*%0A%0A";
+            mensagem += "📦 Custo Bruto: R$ " + bruto.toFixed(2) + "%0A";
+            mensagem += "💸 Sell Out: R$ " + s.toFixed(2) + "%0A";
+            mensagem += "🛡️ Custo Líquido: R$ " + (bruto - s).toFixed(2) + "%0A";
+            mensagem += "🏷️ Venda Final: R$ " + (document.getElementById('v2').value || "0.00") + "%0A";
+            mensagem += "📈 Markup Líq: " + (document.getElementById('mk2').value || "0.00") + "%%0A";
+            mensagem += "📉 Margem Líq: " + (document.getElementById('mg2').value || "0.00") + "%%0A";
+        }
+        
+        mensagem += "%0A------------------------------%0A_Enviado via CalculaSid PRO_";
+
+        window.open("https://api.whatsapp.com/send?text=" + mensagem, "_blank");
+    }
+</script>
+</body>
+</html>
